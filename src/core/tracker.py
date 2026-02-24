@@ -8,77 +8,70 @@ import numpy as np
 
 class VisionTracker:
     def __init__(self, face_model_path='face_landmarker.task', hand_model_path='hand_landmarker.task'):
-        """
-        Initializes Face and Hand landmarker models once for performance.
-        Ensure the .task files are in the root directory.
-        """
-        # Face Landmarker Setup
-        base_options_face = python.BaseOptions(model_asset_path=face_model_path)
-        options_face = vision.FaceLandmarkerOptions(
-            base_options=base_options_face,
-            output_face_blendshapes=True,
-            output_facial_transformation_matrixes=True,
-            num_faces=1
+        # Setup Face Landmarker
+        base_face = python.BaseOptions(model_asset_path=face_model_path)
+        self.face_detector = vision.FaceLandmarker.create_from_options(
+            vision.FaceLandmarkerOptions(
+                base_options=base_face,
+                output_face_blendshapes=True,
+                num_faces=1
+            )
         )
-        self.face_detector = vision.FaceLandmarker.create_from_options(options_face)
 
-        # Hand Landmarker Setup
-        base_options_hand = python.BaseOptions(model_asset_path=hand_model_path)
-        options_hand = vision.HandLandmarkerOptions(
-            base_options=base_options_hand,
-            num_hands=2
+        # Setup Hand Landmarker
+        base_hand = python.BaseOptions(model_asset_path=hand_model_path)
+        self.hand_detector = vision.HandLandmarker.create_from_options(
+            vision.HandLandmarkerOptions(
+                base_options=base_hand,
+                num_hands=1 
+            )
         )
-        self.hand_detector = vision.HandLandmarker.create_from_options(options_hand)
 
     def process(self, frame):
-        """Processes a single BGR frame and returns both face and hand landmarks."""
-        # MediaPipe expects RGB
+        """Processes RGB frame for landmarks."""
         rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
-
-        face_result = self.face_detector.detect(mp_image)
-        hand_result = self.hand_detector.detect(mp_image)
-
-        return face_result, hand_result
-
-def draw_face_landmarks(rgb_image, detection_result):
-    """Utility to draw face and iris landmarks on an image."""
-    face_landmarks_list = detection_result.face_landmarks
-    annotated_image = np.copy(rgb_image)
-
-    for idx in range(len(face_landmarks_list)):
-        face_landmarks = face_landmarks_list[idx]
-
         
-        drawing_utils.draw_landmarks(
-            image=annotated_image,
-            landmark_list=face_landmarks,
-            connections=vision.FaceLandmarksConnections.FACE_LANDMARKS_LEFT_IRIS,
-            landmark_drawing_spec=None,
-            connection_drawing_spec=drawing_styles.get_default_face_mesh_iris_connections_style())
+        return self.face_detector.detect(mp_image), self.hand_detector.detect(mp_image)
+
+    def get_iris_coords(self, face_result):
+        """Extracts normalized (x, y) for the average iris position."""
+        if not face_result.face_landmarks: return None
+        marks = face_result.face_landmarks[0]
+        # Indices for irises
+        indices = list(range(468, 478))
+        return (sum(marks[i].x for i in indices) / 10, sum(marks[i].y for i in indices) / 10)
+
+    def get_blink_scores(self, face_result):
+        """Returns (left, right) blink scores."""
+        if not face_result.face_blendshapes: return 0.0, 0.0
+        shapes = face_result.face_blendshapes[0]
+        # 9: left, 10: right
+        return shapes[9].score, shapes[10].score
+
+    def get_gaze_ratio(self, face_result):
+        """
+        Calculates the iris position relative to the eye socket.
+        Returns (x_ratio, y_ratio) where 0.5 is centered gaze.
+        """
+        if not face_result.face_landmarks: return None
+        marks = face_result.face_landmarks[0]
         
-        drawing_utils.draw_landmarks(
-            image=annotated_image,
-            landmark_list=face_landmarks,
-            connections=vision.FaceLandmarksConnections.FACE_LANDMARKS_RIGHT_IRIS,
-            landmark_drawing_spec=None,
-            connection_drawing_spec=drawing_styles.get_default_face_mesh_iris_connections_style())
+        # Left Eye (33=outer, 133=inner, 159=top, 145=bottom)
+        # Right Eye (362=inner, 263=outer, 386=top, 374=bottom)
+        l_iris, r_iris = marks[468], marks[473]
 
-    return annotated_image
-
-def draw_hand_landmarks(rgb_image, detection_result):
-    """Utility to draw hand landmarks on an image."""
-    hand_landmarks_list = detection_result.hand_landmarks
-    annotated_image = np.copy(rgb_image)
-
-    for idx in range(len(hand_landmarks_list)):
-        hand_landmarks = hand_landmarks_list[idx]
-
-        drawing_utils.draw_landmarks(
-            image=annotated_image,
-            landmark_list=hand_landmarks,
-            connections=vision.HandLandmarksConnections.HAND_CONNECTIONS,
-            landmark_drawing_spec=drawing_styles.get_default_hand_landmarks_style(),
-            connection_drawing_spec=drawing_styles.get_default_hand_connections_style())
-
-    return annotated_image
+        # Horizontal ratio (0.0 = looking left, 1.0 = looking right)
+        # Note: We use the flipped logic since camera is mirrored
+        l_h = (l_iris.x - marks[33].x) / (marks[133].x - marks[33].x)
+        r_h = (r_iris.x - marks[362].x) / (marks[263].x - marks[362].x)
+        
+        # Vertical ratio (0.0 = looking up, 1.0 = looking down)
+        l_v = (l_iris.y - marks[159].y) / (marks[145].y - marks[159].y)
+        r_v = (r_iris.y - marks[386].y) / (marks[374].y - marks[386].y)
+        
+        # Average both eyes and invert horizontal for intuitive mirroring
+        avg_h = ((l_h + r_h) / 2.0)
+        avg_v = 1.0 - (l_v + r_v) / 2.0
+        
+        return avg_h, avg_v
