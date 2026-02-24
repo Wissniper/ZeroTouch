@@ -1,0 +1,14 @@
+name: Integration Test
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Automatic requirements.txt for Python Project
+        uses: ryan-rozario/pipreqs-action@master
+
+        with:
+          PROJECT_PATH: src/
+          REQUIREMENT_PATH: requirements.txt
+          PROJECT_NAME: zerotouch
