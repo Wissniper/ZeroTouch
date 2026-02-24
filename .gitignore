@@ -1,2 +1,4 @@
 venv/
 GEMINI.md
+*.task
+/src/core/__pycache__/
