@@ -5,15 +5,23 @@ from mediapipe.tasks.python.vision import drawing_utils
 from mediapipe.tasks.python.vision import drawing_styles
 import cv2 as cv
 import numpy as np
+import os
+
+_MODELS_DIR = os.path.join(os.path.dirname(__file__), '..', '..')
 
 class VisionTracker:
-    def __init__(self, face_model_path='face_landmarker.task', hand_model_path='hand_landmarker.task'):
+    def __init__(self, face_model_path=None, hand_model_path=None):
+        if face_model_path is None:
+            face_model_path = os.path.join(_MODELS_DIR, 'face_landmarker.task')
+        if hand_model_path is None:
+            hand_model_path = os.path.join(_MODELS_DIR, 'hand_landmarker.task')
         # Setup Face Landmarker
         base_face = python.BaseOptions(model_asset_path=face_model_path)
         self.face_detector = vision.FaceLandmarker.create_from_options(
             vision.FaceLandmarkerOptions(
                 base_options=base_face,
                 output_face_blendshapes=True,
+                output_facial_transformation_matrixes=True,
                 num_faces=1
             )
         )
@@ -48,6 +56,28 @@ class VisionTracker:
         shapes = face_result.face_blendshapes[0]
         # 9: left, 10: right
         return shapes[9].score, shapes[10].score
+
+    def get_head_pose(self, face_result):
+        """
+        Extracts head rotation from the transformation matrix.
+        Returns (yaw, pitch) as rotation matrix elements (approx. sin of angle, range -1..1).
+
+        matrix[0, 2] = horizontal component of the face's forward (nose) direction in camera space.
+                       Positive when the face turns RIGHT in the (flipped) image, i.e. user turns LEFT.
+        matrix[1, 2] = vertical component of the same vector.
+                       Positive when the face tilts DOWN.
+
+        These are used for head compensation:
+            comp_x = gaze_ratio[0] - yaw  * HEAD_COMP_SCALE
+            comp_y = gaze_ratio[1] - pitch * HEAD_COMP_SCALE
+        """
+        if not face_result.facial_transformation_matrixes: return None
+        matrix = face_result.facial_transformation_matrixes[0]
+
+        yaw   = matrix[0, 2]   # ~sin(horizontal turn)
+        pitch = matrix[1, 2]   # ~sin(vertical tilt)
+
+        return (yaw, pitch)
 
     def get_gaze_ratio(self, face_result):
         """
