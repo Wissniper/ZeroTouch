@@ -17,10 +17,19 @@ class GazeCalibrator:
             (0.1, 0.9), (0.5, 0.9), (0.9, 0.9)
         ]
 
+    def get_current_point(self, screen_w, screen_h, index):
+        """Returns the pixel coordinates for a specific calibration index (0-8)."""
+        rel_x, rel_y = self.calibration_grid[index]
+        return int(rel_x * screen_w), int(rel_y * screen_h)
+
     def add_calibration_point(self, screen_x, screen_y, gaze_x, gaze_y):
-        """Stores a mapped point during the calibration UI phase."""
-        self.reference_points.append([screen_x, screen_y])
-        self.gaze_points.append([gaze_x, gaze_y])
+        """Stores a calibration pair: screen target and corresponding gaze reading."""
+        self.reference_points.append((screen_x, screen_y))
+        self.gaze_points.append((gaze_x, gaze_y))
+
+    def is_finished(self):
+        """Checks if all 9 points have been collected."""
+        return len(self.gaze_points) >= 9
 
     def calculate_mapping(self):
         """
@@ -28,12 +37,14 @@ class GazeCalibrator:
         This matrix maps the non-linear 'bowl' of the eye to the flat screen.
         """
         if len(self.reference_points) < 4:
-            return False # Need at least 4 points for homography
-            
+            return False
+
+        """
+        This 
+        """
         pts_src = np.array(self.gaze_points, dtype=float)
         pts_dst = np.array(self.reference_points, dtype=float)
-        
-        # findHomography finds the best fit perspective transform using multiple points
+
         self.transform_matrix, _ = cv.findHomography(pts_src, pts_dst)
         return self.transform_matrix is not None
 
