@@ -20,6 +20,13 @@ class _OneEuroFilter:
     """
 
     def __init__(self, min_cutoff=1.0, beta=0.05, d_cutoff=1.0):
+        """
+        x_hat = filtered signal, Estimated Value.
+                Hat convention: In statistics and filter theory, a "hat" (circumflex or $\hat{}$) above a variable indicates that it is an estimate of the true (often unobservable or noisy) value.
+        dx_hat = filtered derivative
+        prev_raw = previous raw input (for derivative estimation)
+        prev_t = timestamp of previous sample
+        """
         self.min_cutoff = min_cutoff
         self.beta = beta
         self.d_cutoff = d_cutoff
@@ -29,7 +36,14 @@ class _OneEuroFilter:
         self._prev_t = None
 
     def _alpha(self, freq, cutoff):
-        """Compute EMA alpha from sampling frequency and cutoff frequency."""
+        """
+        Compute EMA alpha from sampling frequency and cutoff frequency.
+        
+        te = The time between samples (1/freq).
+        tau = The time constant of the filter (1/(2π*cutoff)).
+        alpha = 1 / (1 + tau/te) ensures that the filter's response adapts to the sampling rate and cutoff frequency.
+        """
+
         te = 1.0 / freq
         tau = 1.0 / (2.0 * math.pi * cutoff)
         return 1.0 / (1.0 + tau / te)
@@ -70,7 +84,7 @@ class _OneEuroFilter:
 
 
 class GazeProcessor:
-    def __init__(self, min_cutoff=1.0, beta=0.05, velocity_scale=2.0):
+    def __init__(self, min_cutoff=0.5, beta=0.05, velocity_scale=2.0):
         """
         Smooths gaze coordinates with per-axis One-Euro filters.
 

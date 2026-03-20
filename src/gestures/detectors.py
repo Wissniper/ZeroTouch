@@ -1,1 +1,0 @@
-# Per-gesture logic
