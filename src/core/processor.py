@@ -82,25 +82,28 @@ class _OneEuroFilter:
 
         return self._x_hat
 
+    def reset(self):
+        """Clear internal state (e.g. after re-calibration)."""
+        self._x_hat = None
+        self._dx_hat = 0.0
+        self._prev_raw = None
+        self._prev_t = None
+
 
 class GazeProcessor:
-    def __init__(self, min_cutoff=0.5, beta=0.05, velocity_scale=2.0):
-        """
-        Smooths gaze coordinates with per-axis One-Euro filters.
+    """Smooths (x, y) gaze coordinates using per-axis One-Euro filters."""
 
-        Parameters
-        ----------
-        min_cutoff : float
-            Base smoothing (lower = smoother but more lag). Default 1.0.
-        beta : float
-            Responsiveness during fast movement. Default 0.05.
-        velocity_scale : float
-            Reserved for future velocity-based cursor acceleration.
-        """
-        self.velocity_scale = velocity_scale
+    def __init__(self, min_cutoff=0.5, beta=0.05):
         self._fx = _OneEuroFilter(min_cutoff=min_cutoff, beta=beta)
         self._fy = _OneEuroFilter(min_cutoff=min_cutoff, beta=beta)
 
-    def process(self, raw_x, raw_y):
-        t = time.time()
+    def process(self, raw_x, raw_y, t=None):
+        """Return smoothed (x, y). Accepts optional explicit timestamp."""
+        if t is None:
+            t = time.time()
         return self._fx.filter(raw_x, t), self._fy.filter(raw_y, t)
+
+    def reset(self):
+        """Reset both axis filters."""
+        self._fx.reset()
+        self._fy.reset()
