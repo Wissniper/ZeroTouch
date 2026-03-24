@@ -176,18 +176,18 @@ def main():
                 sy = max(0, min(sy, screen_h - 1))
 
                 # ── Move cursor ──────────────────────────────────
-                pyautogui.moveTo(sx, sy, _pause=False)
+                pyautogui.moveTo(sx, sy)
 
                 # ── Wink → click ─────────────────────────────────
                 l_blink, r_blink = tracker.get_blink_scores(face_res)
                 wink = gestures.detect_wink(l_blink, r_blink)
 
                 if wink == "left":
-                    pyautogui.click(_pause=False)
+                    pyautogui.click()
                     cv.putText(frame, "LEFT CLICK", (240, 400),
                                cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                 elif wink == "right":
-                    pyautogui.rightClick(_pause=False)
+                    pyautogui.rightClick()
                     cv.putText(frame, "RIGHT CLICK", (240, 400),
                                cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
@@ -200,7 +200,7 @@ def main():
                     if gesture_name == "scroll":
                         delta = gestures.detect_scroll(hand_lm)
                         if delta is not None:
-                            pyautogui.scroll(int(-delta * SCROLL_SENSITIVITY), _pause=False)
+                            pyautogui.scroll(int(-delta * SCROLL_SENSITIVITY))
                             cv.putText(frame, "SCROLL", (10, 460),
                                        cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
 
@@ -211,38 +211,38 @@ def main():
                             mod = "command" if platform.system() == "Darwin" else "ctrl"
                             direction = 1 if pinch_delta > 0 else -1
                             with pyautogui.hold(mod):
-                                pyautogui.scroll(direction, _pause=False)
+                                pyautogui.scroll(direction)
                             cv.putText(frame, "ZOOM", (10, 460),
                                        cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
 
                     elif gesture_name == "drag":
                         # 3 fingers: hold mouse button (drag initiated by iris)
-                        pyautogui.mouseDown(_pause=False)
+                        pyautogui.mouseDown()
                         cv.putText(frame, "DRAG", (10, 460),
                                    cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 165, 255), 2)
 
                     elif gesture_name == "switch_desktop":
                         swipe = gestures.detect_swipe(hand_lm)
                         if swipe == "left":
-                            pyautogui.hotkey("ctrl", "left", _pause=False)
+                            pyautogui.hotkey("ctrl", "left")
                             cv.putText(frame, "DESKTOP <-", (10, 460),
                                        cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
                         elif swipe == "right":
-                            pyautogui.hotkey("ctrl", "right", _pause=False)
+                            pyautogui.hotkey("ctrl", "right")
                             cv.putText(frame, "DESKTOP ->", (10, 460),
                                        cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
 
                     elif gesture_name == "mission_control":
                         if platform.system() == "Darwin":
-                            pyautogui.hotkey("ctrl", "up", _pause=False)
+                            pyautogui.hotkey("ctrl", "up")
                         else:
-                            pyautogui.hotkey("super", "tab", _pause=False)
+                            pyautogui.hotkey("super", "tab")
                         cv.putText(frame, "MISSION CTRL", (10, 460),
                                    cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
                 else:
                     # No hand detected → ensure mouse button released
-                    pyautogui.mouseUp(_pause=False)
+                    pyautogui.mouseUp()
 
                 # ── Drift correction (periodic) ──────────────────
                 now = time.time()
