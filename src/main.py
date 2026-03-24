@@ -1,12 +1,15 @@
 """IrisFlow — real-time iris gaze tracker with gesture control.
 
-Entry point.  Run with:
-    python -m src          # as package
-    irisflow               # if installed via pip
+Run with any of:
+    python -m src              # as package (from repo root)
+    python src/main.py         # directly
+    irisflow                   # if installed via pip
 """
 
 import time
 import platform
+import sys
+import os
 
 import cv2 as cv
 import pyautogui
@@ -16,6 +19,12 @@ import numpy as np
 pyautogui.FAILSAFE = True
 # Disable pyautogui's built-in 0.1 s pause after every call
 pyautogui.PAUSE = 0
+
+# Ensure the repo root is on sys.path so both `python -m src` and
+# `python src/main.py` resolve imports identically.
+_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
 
 from src.core.tracker import VisionTracker
 from src.core.processor import GazeProcessor
