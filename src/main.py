@@ -181,77 +181,83 @@ def main():
             sx, sy = processor.process(raw_sx, raw_sy)
 
             if sx is not None and sy is not None:
-                sx = max(0, min(sx, screen_w - 1))
-                sy = max(0, min(sy, screen_h - 1))
+                # Keep cursor 5px from edges so the failsafe corner
+                # (0,0) is never reached during normal gaze tracking.
+                MARGIN = 5
+                sx = max(MARGIN, min(sx, screen_w - MARGIN))
+                sy = max(MARGIN, min(sy, screen_h - MARGIN))
 
-                # ── Move cursor ──────────────────────────────────
-                pyautogui.moveTo(sx, sy)
+                try:
+                    # ── Move cursor ──────────────────────────────
+                    pyautogui.moveTo(sx, sy)
 
-                # ── Wink → click ─────────────────────────────────
-                l_blink, r_blink = tracker.get_blink_scores(face_res)
-                wink = gestures.detect_wink(l_blink, r_blink)
+                    # ── Wink → click ─────────────────────────────
+                    l_blink, r_blink = tracker.get_blink_scores(face_res)
+                    wink = gestures.detect_wink(l_blink, r_blink)
 
-                if wink == "left":
-                    pyautogui.click()
-                    cv.putText(frame, "LEFT CLICK", (240, 400),
-                               cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                elif wink == "right":
-                    pyautogui.rightClick()
-                    cv.putText(frame, "RIGHT CLICK", (240, 400),
-                               cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+                    if wink == "left":
+                        pyautogui.click()
+                        cv.putText(frame, "LEFT CLICK", (240, 400),
+                                   cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                    elif wink == "right":
+                        pyautogui.rightClick()
+                        cv.putText(frame, "RIGHT CLICK", (240, 400),
+                                   cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
-                # ── Hand gestures ────────────────────────────────
-                hand_lm = tracker.get_hand_landmarks(hand_res)
-                if hand_lm is not None:
-                    finger_count = tracker.count_extended_fingers(hand_lm)
-                    gesture_name = gestures.classify_hand_gesture(hand_lm, finger_count)
+                    # ── Hand gestures ────────────────────────────
+                    hand_lm = tracker.get_hand_landmarks(hand_res)
+                    if hand_lm is not None:
+                        finger_count = tracker.count_extended_fingers(hand_lm)
+                        gesture_name = gestures.classify_hand_gesture(hand_lm, finger_count)
 
-                    if gesture_name == "scroll":
-                        delta = gestures.detect_scroll(hand_lm)
-                        if delta is not None:
-                            pyautogui.scroll(int(-delta * SCROLL_SENSITIVITY))
-                            cv.putText(frame, "SCROLL", (10, 460),
-                                       cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+                        if gesture_name == "scroll":
+                            delta = gestures.detect_scroll(hand_lm)
+                            if delta is not None:
+                                pyautogui.scroll(int(-delta * SCROLL_SENSITIVITY))
+                                cv.putText(frame, "SCROLL", (10, 460),
+                                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
 
-                    elif gesture_name == "zoom":
-                        pinch_delta = gestures.detect_pinch(hand_lm)
-                        if pinch_delta is not None:
-                            # Zoom via Cmd+scroll (macOS) or Ctrl+scroll (other)
-                            mod = "command" if platform.system() == "Darwin" else "ctrl"
-                            direction = 1 if pinch_delta > 0 else -1
-                            with pyautogui.hold(mod):
-                                pyautogui.scroll(direction)
-                            cv.putText(frame, "ZOOM", (10, 460),
-                                       cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+                        elif gesture_name == "zoom":
+                            pinch_delta = gestures.detect_pinch(hand_lm)
+                            if pinch_delta is not None:
+                                mod = "command" if platform.system() == "Darwin" else "ctrl"
+                                direction = 1 if pinch_delta > 0 else -1
+                                with pyautogui.hold(mod):
+                                    pyautogui.scroll(direction)
+                                cv.putText(frame, "ZOOM", (10, 460),
+                                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
 
-                    elif gesture_name == "drag":
-                        # 3 fingers: hold mouse button (drag initiated by iris)
-                        pyautogui.mouseDown()
-                        cv.putText(frame, "DRAG", (10, 460),
-                                   cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 165, 255), 2)
+                        elif gesture_name == "drag":
+                            pyautogui.mouseDown()
+                            cv.putText(frame, "DRAG", (10, 460),
+                                       cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 165, 255), 2)
 
-                    elif gesture_name == "switch_desktop":
-                        swipe = gestures.detect_swipe(hand_lm)
-                        if swipe == "left":
-                            pyautogui.hotkey("ctrl", "left")
-                            cv.putText(frame, "DESKTOP <-", (10, 460),
-                                       cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
-                        elif swipe == "right":
-                            pyautogui.hotkey("ctrl", "right")
-                            cv.putText(frame, "DESKTOP ->", (10, 460),
-                                       cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
+                        elif gesture_name == "switch_desktop":
+                            swipe = gestures.detect_swipe(hand_lm)
+                            if swipe == "left":
+                                pyautogui.hotkey("ctrl", "left")
+                                cv.putText(frame, "DESKTOP <-", (10, 460),
+                                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
+                            elif swipe == "right":
+                                pyautogui.hotkey("ctrl", "right")
+                                cv.putText(frame, "DESKTOP ->", (10, 460),
+                                           cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
 
-                    elif gesture_name == "mission_control":
-                        if platform.system() == "Darwin":
-                            pyautogui.hotkey("ctrl", "up")
-                        else:
-                            pyautogui.hotkey("super", "tab")
-                        cv.putText(frame, "MISSION CTRL", (10, 460),
-                                   cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                        elif gesture_name == "mission_control":
+                            if platform.system() == "Darwin":
+                                pyautogui.hotkey("ctrl", "up")
+                            else:
+                                pyautogui.hotkey("super", "tab")
+                            cv.putText(frame, "MISSION CTRL", (10, 460),
+                                       cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
-                else:
-                    # No hand detected → ensure mouse button released
-                    pyautogui.mouseUp()
+                    else:
+                        # No hand detected → ensure mouse button released
+                        pyautogui.mouseUp()
+
+                except pyautogui.FailSafeException:
+                    print("Failsafe triggered — exiting gracefully.")
+                    break
 
                 # ── Drift correction (periodic) ──────────────────
                 now = time.time()
