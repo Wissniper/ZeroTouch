@@ -1,19 +1,14 @@
 import cv2 as cv
-import sys
-import os
 import pyautogui
 import numpy as np
 
 # Safety Mandate
 pyautogui.FAILSAFE = True
 
-# Add parent dir to path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-from core.tracker import VisionTracker
-from core.processor import GazeProcessor
-from core.calibration import GazeCalibrator
-from gestures.gestures import GestureController
+from src.core.tracker import VisionTracker
+from src.core.processor import GazeProcessor
+from src.core.calibration import GazeCalibrator
+from src.gestures.gestures import GestureController
 
 def run_calibration(cap, tracker, screen_w, screen_h):
     """
