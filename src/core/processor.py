@@ -20,7 +20,7 @@ class _OneEuroFilter:
     """
 
     def __init__(self, min_cutoff=1.0, beta=0.05, d_cutoff=1.0):
-        """
+        r"""
         x_hat = filtered signal, Estimated Value.
                 Hat convention: In statistics and filter theory, a "hat" (circumflex or $\hat{}$) above a variable indicates that it is an estimate of the true (often unobservable or noisy) value.
         dx_hat = filtered derivative
