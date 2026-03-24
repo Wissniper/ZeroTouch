@@ -53,6 +53,10 @@ class GazeCalibrator:
         we explicitly pass RANSAC for outlier robustness with
         reprojectionThreshold=5.0 pixels).
 
+        RANSAC is an iterative algorithm used to robustly estimate a mathematical model from data that may contain outliers
+
+        a homography matrix from gaze ↔ screen correspondences, using RANSAC to ignore outliers (bad calibration taps, blinking, noise, etc.).
+
         Returns True if the matrix was computed successfully.
         """
         if len(self.reference_points) < 4:

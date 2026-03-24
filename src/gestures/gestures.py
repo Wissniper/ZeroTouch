@@ -11,7 +11,7 @@ import time
 class GestureController:
     """Stateful gesture detector with cooldowns to prevent repeat-firing.
 
-    Gesture map (matches REPORT.md spec):
+    Gesture map:
         Left wink  → left click
         Right wink → right click
         1 finger   → scroll mode (index Y-velocity)
