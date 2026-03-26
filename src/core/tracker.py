@@ -149,7 +149,7 @@ class VisionTracker:
         is further from the wrist (landmark 0) than its MCP joint.
 
         Landmark indices per finger:
-            Thumb:  tip=4,  mcp=2
+            Thumb:  tip=4,  mcp=1
             Index:  tip=8,  mcp=5
             Middle: tip=12, mcp=9
             Ring:   tip=16, mcp=13
@@ -158,14 +158,17 @@ class VisionTracker:
         if landmarks is None:
             return 0
 
-        wrist = landmarks[0]
+        tip_ids = [4, 8, 12, 16, 20]
+        finger_states = []
+        for tip_id in tip_ids:
+            finger_tip = landmarks[tip_id]
+            finger_mcp = landmarks[tip_id - 3]
+            # Check if finger is open or closed
+            if tip_id==4:
+                finger_states.append(finger_tip.x < finger_mcp.x)
+            else:
+                finger_states.append(finger_tip.y < finger_mcp.y)
+        # Count number of open fingers
+        count = finger_states.count(True)
 
-        def _dist(a, b):
-            return math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
-
-        fingers = [(4, 2), (8, 5), (12, 9), (16, 13), (20, 17)]
-        count = 0
-        for tip_idx, mcp_idx in fingers:
-            if _dist(landmarks[tip_idx], wrist) > _dist(landmarks[mcp_idx], wrist):
-                count += 1
         return count

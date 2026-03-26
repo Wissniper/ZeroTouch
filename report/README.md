@@ -74,10 +74,18 @@ Auto-drift correction shifts H[0,2] and H[1,2] (translation) when the user re-ce
 
 Eye-socket landmarks can collapse during blinks or extreme angles, making `marks[133].x - marks[33].x == 0`. Added epsilon guard (`_EPS = 1e-6`) to all gaze ratio denominators.
 
+### Finger Counting
+
+`count_extended_fingers` used just 2 landmark indices per finger, which caused the fingers to be counted wrong.
+
+I took inspiration from d-kleine his [finger_counter_webcam](https://github.com/d-kleine/finger_counter_webcam) project, now comparing the `x`and `y`-coordinates of the tip and mcp finder indexes, instead of euclidic distance.
+
+![](resources/hand_landmarks.png)
+
 ## Implementation Status
 
 - [x] Drift correction — translational offset on homography matrix
-- [x] Hand gestures — scroll, zoom, drag, desktop switch, mission control
+- [ ] Hand gestures — scroll, zoom, drag, desktop switch, mission control
 - [x] Click execution — `pyautogui.click()` wired to wink detection
 - [x] Blink filtering — cooldown timer (500ms) prevents double-triggers
 - [x] FPS counter — rolling 1-second average displayed on camera feed
@@ -87,4 +95,3 @@ Eye-socket landmarks can collapse during blinks or extreme angles, making `marks
 
 ## Reflection
 
-This project taught me the difference between "technically working" (raw iris coordinates moving the mouse) and "actually usable" (smooth, predictable cursor control). The signal processing fundamentals — particularly understanding the jitter-latency tradeoff and why adaptive filters outperform fixed ones — were the most valuable takeaways. The homography calibration was a satisfying application of linear algebra to a real problem.
