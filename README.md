@@ -21,36 +21,36 @@ A **zero-touch** computer interface that replaces your mouse with your eyes and 
 
 | Gesture | Action | Input | Status |
 |---------|--------|-------|--------|
-| Iris movement | Cursor control | Eye gaze (both eyes averaged) | Done |
-| Left wink | Left click | Eye blink differential | Done |
-| Right wink | Right click | Eye blink differential | Done |
-| 1 finger (index) | Scroll | Index finger Y-velocity | Done |
-| 2 fingers (pinch) | Zoom | Thumb-index distance delta | Done |
-| 3 fingers | Drag | Hold mouse button | Done |
-| 4-finger swipe | Switch desktop | Index finger X-velocity | Done |
-| 5 fingers (palm) | Mission Control | All fingers extended | Done |
-| 9-point calibration | Gaze → screen mapping | Homography (RANSAC) | Done |
-| Auto drift correction | Re-centre gaze mapping | Translation offset every 30s | Done |
+| Iris movement | Cursor control | Eye gaze (both eyes averaged) | In Progress |
+| Left wink | Left click | Eye blink differential | In Progress |
+| Right wink | Right click | Eye blink differential | In Progress |
+| 1 finger (index) | Scroll | Index finger Y-velocity | In Progress |
+| 2 fingers (pinch) | Zoom | Thumb-index distance delta | In Progress |
+| 3 fingers | Drag | Hold mouse button | In Progress |
+| 4-finger swipe | Switch desktop | Index finger X-velocity | In Progress |
+| 5 fingers (palm) | Mission Control | All fingers extended | In Progress |
+| 9-point calibration | Gaze → screen mapping | Homography (RANSAC) | In Progress |
+| Auto drift correction | Re-centre gaze mapping | Translation offset every 30s | In Progress |
 
 ## How It Works
 
 ```
-┌─────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   Webcam     │────►│  MediaPipe Face   │────►│  Gaze Ratio     │
-│  (640×480)   │     │  468 landmarks    │     │  (iris / socket) │
-└─────────────┘     │  + blendshapes    │     └────────┬────────┘
-                    │  + transform mat  │              │
-                    └──────────────────┘              │
-                                                       ▼
-┌─────────────┐     ┌──────────────────┐     ┌─────────────────┐
+┌──────────────┐      ┌───────────────────┐     ┌─────────────────┐
+│   Webcam     │────► │  MediaPipe Face   │────►│  Gaze Ratio     │
+│  (640×480)   │      │  468 landmarks    │     │ (iris / socket) │
+└──────────────┘      │  + blendshapes    │     └────────┬────────┘
+                      │  + transform mat  │              │
+                      └───────────────────┘              │
+                                                         ▼
+┌──────────────┐     ┌───────────────────┐     ┌─────────────────┐
 │  PyAutoGUI   │◄────│  One-Euro Filter  │◄────│  Head Comp +    │
 │  move/click  │     │  (adaptive smooth)│     │  Homography     │
-└─────────────┘     └──────────────────┘     └─────────────────┘
+└──────────────┘     └───────────────────┘     └─────────────────┘
 
-┌─────────────┐     ┌──────────────────┐
+┌──────────────┐     ┌───────────────────┐
 │  MediaPipe   │────►│  Gesture          │────► scroll / zoom /
 │  Hand (21)   │     │  Controller       │      drag / switch
-└─────────────┘     └──────────────────┘
+└──────────────┘     └───────────────────┘
 ```
 
 ### Key Algorithms
