@@ -4,18 +4,19 @@
 See: .planning/PROJECT.md (updated 2026-05-03)
 
 **Core value**: High-performance, stable gaze/gesture control.
-**Current focus**: Phase 2 — Inference Engine & Performance Fixes
+**Current focus**: Phase 3 — Gaze Stabilization & Calibration
 
 ## Status Summary
 - **Phase 1**: Completed
-- **Phase 2**: In Progress
+- **Phase 2**: Completed
+- **Phase 3**: In Progress
 - **Audit Remediation**: Integrated into roadmap
-- **Overall Progress**: 20%
+- **Overall Progress**: 40%
 
 ## Active Tasks
-- [x] Implement ONNX Runtime wrapper (GAZE-01)
-- [x] Add confidence gating logic (STAB-01)
-- [x] Implement ROI tracking logic (STAB-04)
+- [x] Implement Kalman Filter (STAB-03)
+- [x] Implement Homography Calibration (GAZE-02)
+- [x] Add Head-Pose Compensation (GAZE-03)
 
 ## Blockers
 - None

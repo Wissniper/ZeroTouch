@@ -1,5 +1,7 @@
 #include "irisflow/camera/WebcamCapture.hpp"
 #include "irisflow/inference/ONNXEngine.hpp"
+#include "irisflow/processing/KalmanFilter.hpp"
+#include "irisflow/processing/GazeCalibrator.hpp"
 #include <iostream>
 #include <chrono>
 
@@ -7,7 +9,7 @@ int main(int argc, char** argv) {
     std::cout << "IrisFlow C++ Rewrite Initialized" << std::endl;
     
     // Initialize camera
-    irisflow::camera::WebcamCapture camera(0); // device 0
+    irisflow::camera::WebcamCapture camera(0);
     if (!camera.start()) {
         std::cerr << "Failed to start camera capture." << std::endl;
         return -1;
@@ -19,29 +21,48 @@ int main(int argc, char** argv) {
         std::cerr << "Warning: Could not load model. Continuing without inference." << std::endl;
     }
 
+    // Initialize processors
+    irisflow::processing::KalmanFilter2D gazeFilter;
+    irisflow::processing::GazeCalibrator calibrator;
+    
+    // Simulate some calibration points for testing
+    calibrator.addCalibrationPoint(cv::Point2f(0.3f, 0.3f), cv::Point2f(100.f, 100.f));
+    calibrator.addCalibrationPoint(cv::Point2f(0.7f, 0.3f), cv::Point2f(1820.f, 100.f));
+    calibrator.addCalibrationPoint(cv::Point2f(0.3f, 0.7f), cv::Point2f(100.f, 980.f));
+    calibrator.addCalibrationPoint(cv::Point2f(0.7f, 0.7f), cv::Point2f(1820.f, 980.f));
+    calibrator.computeHomography();
+
     std::cout << "Camera capture started. Reading frames..." << std::endl;
     cv::Mat frame;
     int frameCount = 0;
     
     auto startTime = std::chrono::steady_clock::now();
     
-    // Process frames (demo loop, e.g., 60 frames)
+    // Process frames (demo loop)
     while (frameCount < 60) {
         if (camera.getFrame(frame)) {
             frameCount++;
             
-            // STAB-04: ROI Tracking
-            // We use a fixed ROI for demonstration, normally tracked between frames
             cv::Rect roi(frame.cols / 4, frame.rows / 4, frame.cols / 2, frame.rows / 2);
             irisflow::core::DetectionResult result;
             
-            // GAZE-01: ONNX Inference
             if (inferenceEngine.infer(frame, roi, result)) {
-                // STAB-01: Confidence Gating
-                if (result.isValid()) {
-                    // std::cout << "Valid detection with confidence: " << result.confidence << std::endl;
-                } else {
-                    // std::cout << "Detection ignored due to low confidence." << std::endl;
+                if (result.isValid() && !result.landmarks.empty()) {
+                    // Get raw gaze from model (simulated here via landmark 0)
+                    cv::Point2f rawGaze(result.landmarks[0].x, result.landmarks[0].y);
+                    
+                    // Simulate head pose estimation
+                    float simulatedHeadYaw = 0.1f;
+                    float simulatedHeadPitch = -0.05f;
+                    
+                    // GAZE-03: Head Pose Compensation
+                    cv::Point2f compGaze = calibrator.compensateHeadPose(rawGaze, simulatedHeadYaw, simulatedHeadPitch);
+                    
+                    // STAB-03: Kalman Filter Stabilization
+                    cv::Point2f smoothedGaze = gazeFilter.update(compGaze.x, compGaze.y);
+                    
+                    // GAZE-02: Homography Mapping
+                    cv::Point2f screenGaze = calibrator.mapToScreen(smoothedGaze);
                 }
             }
         }

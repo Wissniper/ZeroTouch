@@ -19,6 +19,8 @@ add_executable(irisflow
     src/main.cpp
     src/camera/WebcamCapture.cpp
     src/inference/ONNXEngine.cpp
+    src/processing/KalmanFilter.cpp
+    src/processing/GazeCalibrator.cpp
 )
 
 target_include_directories(irisflow PRIVATE ${OpenCV_INCLUDE_DIRS})
