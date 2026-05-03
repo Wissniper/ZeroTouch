@@ -18,6 +18,7 @@ include_directories(include)
 add_executable(irisflow
     src/main.cpp
     src/camera/WebcamCapture.cpp
+    src/inference/ONNXEngine.cpp
 )
 
 target_include_directories(irisflow PRIVATE ${OpenCV_INCLUDE_DIRS})

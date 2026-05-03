@@ -1,4 +1,5 @@
 #include "irisflow/camera/WebcamCapture.hpp"
+#include "irisflow/inference/ONNXEngine.hpp"
 #include <iostream>
 #include <chrono>
 
@@ -12,6 +13,12 @@ int main(int argc, char** argv) {
         return -1;
     }
 
+    // Initialize inference engine
+    irisflow::inference::ONNXEngine inferenceEngine;
+    if (!inferenceEngine.loadModel("models/dummy.onnx")) {
+        std::cerr << "Warning: Could not load model. Continuing without inference." << std::endl;
+    }
+
     std::cout << "Camera capture started. Reading frames..." << std::endl;
     cv::Mat frame;
     int frameCount = 0;
@@ -22,6 +29,21 @@ int main(int argc, char** argv) {
     while (frameCount < 60) {
         if (camera.getFrame(frame)) {
             frameCount++;
+            
+            // STAB-04: ROI Tracking
+            // We use a fixed ROI for demonstration, normally tracked between frames
+            cv::Rect roi(frame.cols / 4, frame.rows / 4, frame.cols / 2, frame.rows / 2);
+            irisflow::core::DetectionResult result;
+            
+            // GAZE-01: ONNX Inference
+            if (inferenceEngine.infer(frame, roi, result)) {
+                // STAB-01: Confidence Gating
+                if (result.isValid()) {
+                    // std::cout << "Valid detection with confidence: " << result.confidence << std::endl;
+                } else {
+                    // std::cout << "Detection ignored due to low confidence." << std::endl;
+                }
+            }
         }
     }
     
