@@ -12,8 +12,8 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 - **Overall Progress**: 0%
 
 ## Active Tasks
-- [ ] Initialize CMake project structure
-- [ ] Configure ONNX Runtime & OpenCV dependencies
+- [x] Initialize CMake project structure
+- [x] Configure ONNX Runtime & OpenCV dependencies
 - [ ] Implement multi-threaded frame capture
 
 ## Blockers
