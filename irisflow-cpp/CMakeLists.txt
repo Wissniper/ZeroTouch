@@ -21,6 +21,7 @@ add_executable(irisflow
     src/inference/ONNXEngine.cpp
     src/processing/KalmanFilter.cpp
     src/processing/GazeCalibrator.cpp
+    src/control/GestureController.cpp
 )
 
 target_include_directories(irisflow PRIVATE ${OpenCV_INCLUDE_DIRS})
