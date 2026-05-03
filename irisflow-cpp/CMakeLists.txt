@@ -22,10 +22,16 @@ add_executable(irisflow
     src/processing/KalmanFilter.cpp
     src/processing/GazeCalibrator.cpp
     src/control/GestureController.cpp
+    src/control/OSEventInjector.cpp
 )
 
 target_include_directories(irisflow PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(irisflow PRIVATE ${OpenCV_LIBS})
+
+if(APPLE)
+    find_library(APP_SERVICES ApplicationServices)
+    target_link_libraries(irisflow PRIVATE ${APP_SERVICES})
+endif()
 
 if(onnxruntime_FOUND)
     target_link_libraries(irisflow PRIVATE onnxruntime)

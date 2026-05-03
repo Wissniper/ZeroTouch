@@ -3,6 +3,7 @@
 #include "irisflow/processing/KalmanFilter.hpp"
 #include "irisflow/processing/GazeCalibrator.hpp"
 #include "irisflow/control/GestureController.hpp"
+#include "irisflow/control/OSEventInjector.hpp"
 #include <iostream>
 #include <chrono>
 
@@ -26,6 +27,7 @@ int main(int argc, char** argv) {
     irisflow::processing::KalmanFilter2D gazeFilter;
     irisflow::processing::GazeCalibrator calibrator;
     irisflow::control::GestureController gestureController;
+    irisflow::control::OSEventInjector osInjector;
     
     // Simulate some calibration points for testing
     calibrator.addCalibrationPoint(cv::Point2f(0.3f, 0.3f), cv::Point2f(100.f, 100.f));
@@ -62,11 +64,19 @@ int main(int argc, char** argv) {
                     // GAZE-02: Homography Mapping
                     cv::Point2f screenGaze = calibrator.mapToScreen(smoothedGaze);
 
+                    // CORE-03: OS Cursor Move
+                    osInjector.moveCursor(screenGaze);
+
                     // GEST-02 & STAB-05: Hand Gesture Detection
                     irisflow::control::GestureType rawGesture = gestureController.detectHandGesture(result);
                     
                     // STAB-02: Temporal Filtering
                     irisflow::control::GestureType finalGesture = gestureController.filterGesture(rawGesture);
+
+                    // CORE-03: OS Gesture Injection
+                    if (finalGesture != irisflow::control::GestureType::NONE) {
+                        osInjector.executeGesture(finalGesture);
+                    }
                 }
             }
         }
