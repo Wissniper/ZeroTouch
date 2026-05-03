@@ -14,7 +14,7 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 ## Active Tasks
 - [x] Initialize CMake project structure
 - [x] Configure ONNX Runtime & OpenCV dependencies
-- [ ] Implement multi-threaded frame capture
+- [x] Implement multi-threaded frame capture
 
 ## Blockers
 - None
