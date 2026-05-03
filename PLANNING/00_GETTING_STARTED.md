@@ -1,6 +1,6 @@
 # Getting Started: Week 1 Checklist
 
-This document covers the immediate next steps to kick off the Rust + ML rewrite project.
+This document covers the immediate next steps to kick off the C++ + ML rewrite project.
 
 ---
 
@@ -43,8 +43,8 @@ mkdir -p data/{raw,processed,models}
 # Create scripts directory
 mkdir -p scripts/{data_collection,training,validation}
 
-# Create Rust project structure (will do in Week 5)
-# mkdir -p irisflow-rs
+# Create C++ project structure (will do in Week 5)
+# mkdir irisflow-cpp
 
 # Ensure .planning directory exists
 mkdir -p .planning
@@ -84,7 +84,7 @@ import time
 from pathlib import Path
 from src.core.tracker import FaceTracker
 
-# See .planning/01_DATA_COLLECTION_GUIDE.md for full implementation
+# See PLANNING/01_DATA_COLLECTION_GUIDE.md for full implementation
 # This is a placeholder - fill in from the guide document
 
 def main():
@@ -101,7 +101,7 @@ Create `scripts/data_collection/collect_gestures.py`:
 #!/usr/bin/env python3
 """Gesture data collection script."""
 
-# See .planning/01_DATA_COLLECTION_GUIDE.md for full implementation
+# See PLANNING/01_DATA_COLLECTION_GUIDE.md for full implementation
 
 def main():
     print("Gesture data collection starting...")
@@ -316,7 +316,7 @@ By end of Week 1, create:
 3. Week 4: Export both to ONNX, validate
 ```
 
-### Project Status Checklist (`.planning/WEEK1_CHECKLIST.md`)
+### Project Status Checklist (`PLANNING/WEEK1_CHECKLIST.md`)
 
 ```markdown
 ## Week 1 Completion Checklist
@@ -425,12 +425,12 @@ scripts/
     ├── validate_gaze.py
     └── validate_gestures.py
 
-.planning/
+PLANNING/
 ├── 00_GETTING_STARTED.md         (this file)
 ├── WEEK1_CHECKLIST.md            (completion status)
-├── RUST_ML_REWRITE_PLAN.md       (master plan)
+├── CPP_ML_REWRITE_PLAN.md       (master plan)
 ├── 01_DATA_COLLECTION_GUIDE.md   (detailed methodology)
-├── 02_RUST_ARCHITECTURE.md       (system design)
+├── 02_CPP_ARCHITECTURE.md       (system design)
 └── 03_LEARNING_OBJECTIVES.md     (skills & progress)
 ```
 
@@ -475,8 +475,8 @@ python scripts/validation/validate_gestures.py
 **If stuck on:**
 - PyTorch/CUDA: Check official docs + StackOverflow
 - MediaPipe issues: Check MediaPipe GitHub issues
-- Data quality: Review .planning/01_DATA_COLLECTION_GUIDE.md
-- Architecture questions: Review .planning/RUST_ML_REWRITE_PLAN.md
+- Data quality: Review PLANNING/01_DATA_COLLECTION_GUIDE.md
+- Architecture questions: Review PLANNING/CPP_ML_REWRITE_PLAN.md
 
 ---
 
@@ -488,7 +488,6 @@ Preview:
 - [ ] Train gaze regression model (Week 2)
 - [ ] Train gesture LSTM (Week 3)
 - [ ] Export both to ONNX (Week 4)
-- [ ] Rust development begins (Week 5)
+- [ ] C++ development begins (Week 5)
 
-See `.planning/RUST_ML_REWRITE_PLAN.md` for detailed timeline.
-
+See `PLANNING/CPP_ML_REWRITE_PLAN.md` for detailed timeline.

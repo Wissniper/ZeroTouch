@@ -1,6 +1,6 @@
-# IrisFlow Rust + ML Rewrite: Complete Planning Index
+# IrisFlow C++ + ML Rewrite: Complete Planning Index
 
-This index is your roadmap for the 12-16 week rewrite project combining Rust systems programming with machine learning.
+This index is your roadmap for the 12-16 week rewrite project combining C++ systems programming with machine learning.
 
 ---
 
@@ -9,10 +9,10 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
 **New to this project?** Read these in order:
 
 1. **00_GETTING_STARTED.md** — Week 1 checklist and immediate next steps
-2. **RUST_ML_REWRITE_PLAN.md** — Full 16-week master plan with phase breakdown
+2. **CPP_ML_REWRITE_PLAN.md** — Full 16-week master plan with phase breakdown
 3. Choose your focus:
    - **01_DATA_COLLECTION_GUIDE.md** — Detailed ML data collection methodology
-   - **02_RUST_ARCHITECTURE.md** — System architecture and module design
+   - **02_CPP_ARCHITECTURE.md** — System architecture and module design
    - **03_LEARNING_OBJECTIVES.md** — Skills, learning path, and progress tracking
 
 ---
@@ -29,9 +29,9 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
 
 **Read this if:** You're starting today and need immediate next steps.
 
-### RUST_ML_REWRITE_PLAN.md
+### CPP_ML_REWRITE_PLAN.md
 **Complete master plan (16 weeks, ~300-400 hours)**
-- 3-phase breakdown: ML Data (Weeks 1-4), Rust System (Weeks 5-12), Polish (Weeks 13-16)
+- 3-phase breakdown: ML Data (Weeks 1-4), C++ System (Weeks 5-12), Polish (Weeks 13-16)
 - Detailed deliverables for each sub-phase (2.1, 2.2, 2.3, etc.)
 - Week-by-week timeline with checkpoints
 - Risk mitigation strategies
@@ -50,22 +50,22 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
 
 **Read this if:** You're ready to collect data or need to understand the ML pipeline.
 
-### 02_RUST_ARCHITECTURE.md
+### 02_CPP_ARCHITECTURE.md
 **System design and implementation strategy (Phase 2)**
 - System overview diagram and data flow
-- Complete module structure (src/ layout)
+- Complete module structure (include/ and src/ layout)
 - Key data structures (Frame, GazeResult, GestureResult, etc.)
 - Core algorithms: One-Euro filter, temporal gesture filtering, ring buffer
 - Real-time pipeline execution flow with latency targets
-- Memory management and unsafe Rust usage
+- Memory management and RAII usage
 - Platform-specific implementations (macOS vs. Linux)
 - Performance targets and optimization checklist
 
-**Read this if:** You're ready to start Rust development or want to understand the architecture.
+**Read this if:** You're ready to start C++ development or want to understand the architecture.
 
 ### 03_LEARNING_OBJECTIVES.md
 **Educational roadmap and skill development (Weeks 1-16)**
-- Rust systems programming: 6 modules (ownership, FFI, async, profiling, low-level APIs, deployment)
+- C++ systems programming: 6 modules (Memory/RAII, Pointers/FFI, Concurrency, Build Systems, Low-Level APIs, Deployment)
 - Machine learning: 5 phases (dataset, regression, sequences, export, systems)
 - Checkpoint exercises for each module (hands-on learning)
 - Comprehensive skill matrix (beginner → expert)
@@ -84,19 +84,19 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
 → **00_GETTING_STARTED.md** (Week 1 tasks)
 
 ### "I want the full plan before I start"
-→ **RUST_ML_REWRITE_PLAN.md** (read executive summary + timeline)
+→ **CPP_ML_REWRITE_PLAN.md** (read executive summary + timeline)
 
 ### "I'm a machine learning person"
 → **01_DATA_COLLECTION_GUIDE.md** + **03_LEARNING_OBJECTIVES.md** (ML section)
 
 ### "I'm a systems programmer"
-→ **02_RUST_ARCHITECTURE.md** + **03_LEARNING_OBJECTIVES.md** (Rust section)
+→ **02_CPP_ARCHITECTURE.md** + **03_LEARNING_OBJECTIVES.md** (C++ section)
 
-### "I want to learn both Rust and ML"
+### "I want to learn both C++ and ML"
 → **03_LEARNING_OBJECTIVES.md** (complete learning path)
 
 ### "I need to understand the architecture"
-→ **02_RUST_ARCHITECTURE.md** (system design + implementation)
+→ **02_CPP_ARCHITECTURE.md** (system design + implementation)
 
 ---
 
@@ -105,7 +105,7 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
 | Phase | Weeks | Focus | Deliverables |
 |-------|-------|-------|--------------|
 | **Phase 1:** ML Foundation | 1-4 | Data collection + model training | 2 trained ONNX models |
-| **Phase 2:** Rust System | 5-12 | Real-time system implementation | Standalone Rust binary |
+| **Phase 2:** C++ System | 5-12 | Real-time system implementation | Standalone C++ binary |
 | **Phase 3:** Polish | 13-16 | Testing, docs, deployment | Release + blog post |
 
 ---
@@ -132,14 +132,14 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
 ### For Machine Learning
 - Data: `01_DATA_COLLECTION_GUIDE.md`
 - Training: `03_LEARNING_OBJECTIVES.md` (Phase 1-4)
-- Architecture: `RUST_ML_REWRITE_PLAN.md` (Section 1.3-1.5)
+- Architecture: `CPP_ML_REWRITE_PLAN.md` (Section 1.3-1.5)
 - Example code: `01_DATA_COLLECTION_GUIDE.md` + `03_LEARNING_OBJECTIVES.md`
 
-### For Rust Development
-- Architecture: `02_RUST_ARCHITECTURE.md` (complete design)
-- Timeline: `RUST_ML_REWRITE_PLAN.md` (Section 2.1-2.7)
-- Learning path: `03_LEARNING_OBJECTIVES.md` (Rust module 1-6)
-- Implementation: Code in `02_RUST_ARCHITECTURE.md`
+### For C++ Development
+- Architecture: `02_CPP_ARCHITECTURE.md` (complete design)
+- Timeline: `CPP_ML_REWRITE_PLAN.md` (Section 2.1-2.7)
+- Learning path: `03_LEARNING_OBJECTIVES.md` (C++ module 1-6)
+- Implementation: Code in `02_CPP_ARCHITECTURE.md`
 
 ### For Learning
 - Skills to develop: `03_LEARNING_OBJECTIVES.md`
@@ -153,9 +153,9 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
 | Document | Size | Read Time | Purpose |
 |----------|------|-----------|---------|
 | 00_GETTING_STARTED.md | ~8 KB | 20 min | Week 1 orientation |
-| RUST_ML_REWRITE_PLAN.md | ~20 KB | 1 hour | Full master plan |
+| CPP_ML_REWRITE_PLAN.md | ~20 KB | 1 hour | Full master plan |
 | 01_DATA_COLLECTION_GUIDE.md | ~18 KB | 45 min | ML data methodology |
-| 02_RUST_ARCHITECTURE.md | ~22 KB | 1 hour | System design |
+| 02_CPP_ARCHITECTURE.md | ~22 KB | 1 hour | System design |
 | 03_LEARNING_OBJECTIVES.md | ~25 KB | 1.5 hours | Learning roadmap |
 | **TOTAL** | **~93 KB** | **~4.5 hours** | Complete curriculum |
 
@@ -169,35 +169,35 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
    - Keep `00_GETTING_STARTED.md` open for Week 1
    - Reference `01_DATA_COLLECTION_GUIDE.md` during data collection
    - Use `03_LEARNING_OBJECTIVES.md` (ML sections) for training
-   - Check `RUST_ML_REWRITE_PLAN.md` for timeline/milestones
+   - Check `CPP_ML_REWRITE_PLAN.md` for timeline/milestones
 
-2. **Week 5-12 (Rust Phase):**
-   - Keep `02_RUST_ARCHITECTURE.md` as reference
-   - Use `03_LEARNING_OBJECTIVES.md` (Rust sections) for learning
-   - Check `RUST_ML_REWRITE_PLAN.md` for phase breakdown
+2. **Week 5-12 (C++ Phase):**
+   - Keep `02_CPP_ARCHITECTURE.md` as reference
+   - Use `03_LEARNING_OBJECTIVES.md` (C++ sections) for learning
+   - Check `CPP_ML_REWRITE_PLAN.md` for phase breakdown
    - Weekly checkpoint with `03_LEARNING_OBJECTIVES.md` template
 
 3. **Week 13-16 (Polish Phase):**
    - Use `03_LEARNING_OBJECTIVES.md` to verify all skills covered
-   - Reference `02_RUST_ARCHITECTURE.md` for testing/deployment sections
-   - Write blog post covering everything from `RUST_ML_REWRITE_PLAN.md`
+   - Reference `02_CPP_ARCHITECTURE.md` for testing/deployment sections
+   - Write blog post covering everything from `CPP_ML_REWRITE_PLAN.md`
 
 ### For Documentation
 
 1. Copy the weekly checkpoint template from `03_LEARNING_OBJECTIVES.md`
 2. Fill it out every Friday evening
-3. Keep in `.planning/weekly_progress/` directory
+3. Keep in `PLANNING/weekly_progress/` directory
 4. Reference if you need to debug or adjust timeline
 
 ### For Interviews/Portfolio
 
 **Elevator pitch:** (30 seconds)
-> "I built IrisFlow in Rust using self-trained ML models. It's a real-time gaze tracker + gesture recognizer that controls your desktop at 60 FPS with <16ms latency, achieving <50px gaze accuracy and >95% gesture recognition."
+> "I built IrisFlow in C++ using self-trained ML models. It's a real-time gaze tracker + gesture recognizer that controls your desktop at 60 FPS with <16ms latency, achieving <50px gaze accuracy and >95% gesture recognition."
 
 **Deep dive:** (5 minutes)
 - Data collection methodology (Python)
 - Model training (PyTorch: regression + LSTM)
-- Rust architecture (frame capture, inference, optimization)
+- C++ architecture (frame capture, inference, optimization)
 - Performance results (FPS, latency breakdown, memory)
 
 ---
@@ -208,11 +208,11 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
 1. **Data quality issues** after Week 1 → Spend extra week collecting
 2. **Model accuracy stagnates** (>3 weeks, <80%) → Augment data or try different architecture
 3. **Performance target unreachable** (Week 12, <40 FPS) → Lower target or profile for bigger bottlenecks
-4. **Rust/FFI complexity** spiraling → Simplify with ONNX Runtime instead of raw inference
+4. **C++ complexity** spiraling → Simplify with ONNX Runtime instead of raw inference
 
 ### When to accelerate:
 1. **Data collection done early** → Start modeling Week 2 instead of Week 3
-2. **Model training done early** → Begin Rust development early
+2. **Model training done early** → Begin C++ development early
 3. **Frame capture + inference complete** → Skip to optimization
 
 ### When to scope down:
@@ -227,7 +227,7 @@ This index is your roadmap for the 12-16 week rewrite project combining Rust sys
 | Phase | Hours | % | Notes |
 |-------|-------|---|-------|
 | **Phase 1: ML** | ~120 | 30% | Data collection (40h) + training (80h) |
-| **Phase 2: Rust** | ~220 | 55% | Architecture, implementation, optimization |
+| **Phase 2: C++** | ~220 | 55% | Architecture, implementation, optimization |
 | **Phase 3: Polish** | ~60 | 15% | Tests, docs, blog, release |
 | **TOTAL** | **~400** | **100%** | 12-16 weeks @ 25-30 hours/week |
 
@@ -245,20 +245,20 @@ Have you set up Python + PyTorch?
   → YES: Move to next
   ↓
 Do you understand the full project scope?
-  → NO: Read RUST_ML_REWRITE_PLAN.md (30 min)
+  → NO: Read CPP_ML_REWRITE_PLAN.md (30 min)
   → YES: Move to next
   ↓
 Ready to collect data?
   → YES: Read 01_DATA_COLLECTION_GUIDE.md + start Week 1
   → NO: Read 03_LEARNING_OBJECTIVES.md to understand ML concepts first
   ↓
-Ready to understand Rust architecture?
-  → YES: Read 02_RUST_ARCHITECTURE.md
+Ready to understand C++ architecture?
+  → YES: Read 02_CPP_ARCHITECTURE.md
   → NO: Wait until Week 5, or read in Week 4 (end of Phase 1)
   ↓
 Ready to start coding?
   → DATA: Week 1 tasks in 00_GETTING_STARTED.md
-  → RUST: Week 5 tasks in RUST_ML_REWRITE_PLAN.md (Section 2.1)
+  → C++: Week 5 tasks in CPP_ML_REWRITE_PLAN.md (Section 2.1)
 ```
 
 ---
@@ -267,23 +267,23 @@ Ready to start coding?
 
 ### Common Questions
 
-**Q: I don't know how to use ONNX Runtime in Rust**
-→ See `02_RUST_ARCHITECTURE.md` (Module 2.3: Model Loading + Inference)
+**Q: I don't know how to use ONNX Runtime in C++**
+→ See `02_CPP_ARCHITECTURE.md` (Module 2.3: Model Loading + Inference)
 
 **Q: My gaze model isn't converging**
 → See `03_LEARNING_OBJECTIVES.md` (Phase 2: Regression) for debugging tips
 
 **Q: 60 FPS target seems unrealistic**
-→ See `02_RUST_ARCHITECTURE.md` (Performance Targets) for realistic numbers + optimization strategies
+→ See `02_CPP_ARCHITECTURE.md` (Performance Targets) for realistic numbers + optimization strategies
 
 **Q: How do I know if my data is good?**
 → See `01_DATA_COLLECTION_GUIDE.md` (Part 3: Data Validation & Cleaning)
 
-**Q: I'm stuck on unsafe Rust**
-→ See `03_LEARNING_OBJECTIVES.md` (Module 2: Unsafe Rust & FFI) + links to resources
+**Q: I'm stuck on C++ pointers**
+→ See `03_LEARNING_OBJECTIVES.md` (Module 2: Pointers, Memory & Low-Level APIs) + links to resources
 
 **Q: How much time should this actually take?**
-→ See this file (Estimated Effort Breakdown) + `RUST_ML_REWRITE_PLAN.md` (Timeline & Milestones)
+→ See this file (Estimated Effort Breakdown) + `CPP_ML_REWRITE_PLAN.md` (Timeline & Milestones)
 
 ---
 
@@ -306,4 +306,3 @@ To keep this current:
 **👉 Start here:** Open `00_GETTING_STARTED.md` and follow Week 1 checklist.
 
 Good luck! 🚀
-

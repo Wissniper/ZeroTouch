@@ -1,6 +1,6 @@
 # UGent HPC Integration: ML Training Workflow
 
-This document outlines how to use UGent's HPC cluster for fast model training while developing Rust locally.
+This document outlines how to use UGent's HPC cluster for fast model training while developing C++ locally.
 
 ---
 
@@ -23,8 +23,8 @@ Week 1: Data Collection
          │
          └─ Download models to M4
               │
-Week 5+: Rust Development (M4)
-├─ Build Rust binary
+Week 5+: C++ Development (M4)
+├─ Build C++ binary
 ├─ Load ONNX models
 └─ Test on local machine
 ```
@@ -171,7 +171,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 pip install jupyter numpy pandas matplotlib scikit-learn opencv-python scipy tqdm
 
 # Verify GPU
-python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name()}')"
+python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.get_device_name()}')"
 ```
 
 ### Run Jupyter Notebook on HPC
@@ -530,10 +530,10 @@ rsync -avz --progress \
 | 2 | Upload to HPC, gaze training | HPC (Jupyter) | 3-4 hours GPU |
 | 3 | Gesture LSTM training | HPC (Jupyter) | 4-5 hours GPU |
 | 4 | ONNX export, validation, download | HPC/M4 | 1-2 hours |
-| 5-12 | Rust development + testing | M4 | 8 weeks |
+| 5-12 | C++ development + testing | M4 | 8 weeks |
 | 13-16 | Polish, docs, release | M4 | 4 weeks |
 
-**Key advantage:** While HPC trains models (4-5 hours total), you can work on Week 1 data validation or start reading `02_RUST_ARCHITECTURE.md`.
+**Key advantage:** While HPC trains models (4-5 hours total), you can work on Week 1 data validation or start reading `02_CPP_ARCHITECTURE.md`.
 
 ---
 
@@ -595,4 +595,4 @@ module load PyTorch/2.1.2-foss-2023b-CUDA-12.2.0
 | **Availability** | Always | Always | Queue time |
 | **Best for** | Development | Final training | Hyperparameter sweep |
 
-**Recommendation:** Use HPC for final training (Phase 1.3-1.4), M4 for iteration + Rust dev.
+**Recommendation:** Use HPC for final training (Phase 1.3-1.4), M4 for iteration + C++ dev.
