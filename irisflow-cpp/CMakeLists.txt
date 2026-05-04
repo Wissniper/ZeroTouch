@@ -1,8 +1,18 @@
 cmake_minimum_required(VERSION 3.14)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 project(IrisFlow VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Homebrew: OpenCVConfig.cmake lives under opt/opencv/lib/cmake/opencv4
+if(APPLE)
+  list(APPEND CMAKE_PREFIX_PATH
+    "/opt/homebrew/opt/opencv"
+    "/usr/local/opt/opencv"
+  )
+endif()
 
 # Find OpenCV
 find_package(OpenCV REQUIRED)
@@ -12,8 +22,6 @@ find_package(OpenCV REQUIRED)
 # For now, we will add an interface library if find_package fails or just specify it manually.
 # In a real setup, we might need FetchContent or vcpkg. Let's assume vcpkg or system install.
 find_package(onnxruntime QUIET)
-
-include_directories(include)
 
 add_executable(irisflow
     src/main.cpp
@@ -25,7 +33,10 @@ add_executable(irisflow
     src/control/OSEventInjector.cpp
 )
 
-target_include_directories(irisflow PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_include_directories(irisflow PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${OpenCV_INCLUDE_DIRS}
+)
 target_link_libraries(irisflow PRIVATE ${OpenCV_LIBS})
 
 if(APPLE)
