@@ -1,55 +1,43 @@
-# IrisFlow: Real-Time Gaze & Gesture Interface (C++)
+# IrisFlow (C++)
 
-IrisFlow is a high-performance, zero-touch computer interface that replaces the mouse with eye gaze and hand gestures. This version is a complete C++17 rewrite of the original Python prototype, optimized for ultra-low latency and production stability.
+A C++17 framework for building a zero-touch computer interface driven by eye gaze and hand gestures. The pipeline skeleton is complete and builds cleanly; a trained inference model is not yet wired in.
 
-## Key Features
+## What's implemented
 
-- **60+ FPS Tracking**: Multi-threaded capture and inference pipeline.
-- **Kalman Filtering**: Professional-grade gaze stabilization to eliminate jitter.
-- **Confidence Gating**: All detections are validated against confidence thresholds to prevent false triggers.
-- **ROI Tracking**: Optimizes performance by only processing relevant frame regions.
-- **Multi-OS Support**: macOS (Quartz) and Linux (X11/Xtest) event injection.
-- **Robust Gestures**: Temporal majority voting for stable wink and hand gesture detection.
+- **Threaded webcam capture** — background capture thread with mutex-gated frame handoff
+- **Kalman filter gaze stabilisation** — 4-state (x, y, vx, vy) filter to reduce jitter
+- **Homography calibration** — maps normalised gaze coordinates to screen coordinates via RANSAC homography
+- **Gesture majority voting** — 5-frame temporal filter to debounce gesture events
+- **OS event injection** — macOS (Quartz CGEvent) cursor move; gesture stubs ready to fill in
+- **Head-pose compensation** — linear yaw/pitch correction applied before mapping
 
-## Project Structure
+## What's not implemented yet
 
-- `irisflow-cpp/`: Main C++ project root.
-  - `include/`: Header files organized by module (camera, inference, processing, control).
-  - `src/`: Implementation files.
-  - `models/`: ONNX models for gaze and gesture inference.
+- A real gaze / hand-landmark inference model — the main loop currently uses the frame centre as a synthetic gaze point
+- Wink and hand-gesture detection (both require live landmark output from a model)
 
-## Getting Started
+## Build
 
-### Dependencies
-
-- **C++17 Compiler**
-- **CMake 3.14+**
-- **OpenCV**
-- **ONNX Runtime**
-
-### Build
+Dependencies: C++17 compiler, CMake 3.14+, OpenCV (e.g. `brew install opencv`).
 
 ```bash
 cd irisflow-cpp
-mkdir build && cd build
-cmake ..
-make
+cmake -B build .
+cmake --build build
+./build/irisflow
 ```
 
-### Run
+## Project structure
 
-```bash
-./irisflow
 ```
-
-## Audit & Stability
-
-This implementation addresses all critical failure modes identified in the project audit:
-
-- Hand Gesture Instability (Fixed via Temporal Filtering)
-- Finger Counting Unreliability (Fixed via Normalized Heuristics)
-- Detection Jitter (Fixed via Kalman Filtering)
-- Performance Bottlenecks (Fixed via C++ and ROI Tracking)
+irisflow-cpp/
+  include/irisflow/
+    camera/       WebcamCapture
+    processing/   KalmanFilter2D, GazeCalibrator
+    control/      GestureController, OSEventInjector
+    core/         Types (DetectionResult, Landmark)
+  src/            Implementations
+```
 
 ## License
 

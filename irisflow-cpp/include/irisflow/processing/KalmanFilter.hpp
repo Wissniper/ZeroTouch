@@ -21,11 +21,11 @@ public:
     cv::Point2f predict();
 
 private:
-    cv::KalmanFilter m_kf;
-    bool m_initialized{false};
     int m_stateSize{4}; // [x, y, v_x, v_y]
     int m_measSize{2};  // [x, y]
     int m_contrSize{0};
+    cv::KalmanFilter m_kf;
+    bool m_initialized{false};
 };
 
 } // namespace processing
